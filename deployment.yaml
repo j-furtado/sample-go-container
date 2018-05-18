@@ -19,7 +19,7 @@ spec:
       - name: samplego
         image: azcontregxpto.azurecr.io/samplego:$BUILD_NUMBER
         ports:
-        - containerPort: 80
+        - containerPort: 8080
       imagePullSecrets:
       - name: $KUBERNETES_SECRET_NAME
 ---
@@ -30,8 +30,8 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
-    targetPort: 80
+  - port: 8080
+    targetPort: 8080
     protocol: TCP
     name: http
   selector:
