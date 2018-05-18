@@ -1,5 +1,3 @@
-
-#!/bin/groovy
 //
 //  Params to set on the pipeline:
 //    * ACR_CREDS: Credentials for Azure Container Registry
