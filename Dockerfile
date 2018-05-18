@@ -3,9 +3,10 @@ FROM azcontregxpto.azurecr.io/golang:latest
 
 # Create app directory
 RUN mkdir -p /usr/src/app
-WORKDIR /usr/src/app
 
-COPY app/* .
+COPY app/* /usr/src/app
+
+WORKDIR /usr/src/app
 
 RUN go build -o main .
 
