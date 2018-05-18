@@ -1,14 +1,14 @@
 
 #!/bin/groovy
-/*
-    Params to set on the pipeline:
-      * ACR_CREDS: Credentials for Azure Container Registry
-      * ACR_LOGINSERVER: Azure Container Registry login server
-      * AZ_CREDS: Azure Service Principal Credentials
-      * KUBE_RSGRP: Azure resource group name for Kubernetes
-      * KUBE_SERVICE: Azure Kubernetes service name
-      * KUBE_SECRET: Kubernetes secret to access the Azure Container Registry
-*/
+//
+//  Params to set on the pipeline:
+//    * ACR_CREDS: Credentials for Azure Container Registry
+//    * ACR_LOGINSERVER: Azure Container Registry login server
+//    * AZ_CREDS: Azure Service Principal Credentials
+//    * KUBE_RSGRP: Azure resource group name for Kubernetes
+//    * KUBE_SERVICE: Azure Kubernetes service name
+//    * KUBE_SECRET: Kubernetes secret to access the Azure Container Registry
+//
 pipeline {
   agent any
   stages{
