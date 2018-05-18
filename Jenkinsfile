@@ -5,6 +5,7 @@
 //    * AZ_CREDS: Azure Service Principal Credentials
 //    * KUBE_RSGRP: Azure resource group name for Kubernetes
 //    * KUBE_SERVICE: Azure Kubernetes service name
+//    * KUBE_CREDS: SSH Credentials for Kubernetes Master
 //    * KUBE_SECRET: Kubernetes secret to access the Azure Container Registry
 //
 pipeline {
