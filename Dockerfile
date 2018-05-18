@@ -5,7 +5,7 @@ FROM azcontregxpto.azurecr.io/golang:latest
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY app/* .
+COPY app/ .
 
 RUN go build -o main .
 
