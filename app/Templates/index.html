@@ -54,7 +54,7 @@
       // Check if the cell below has a chip
       function noEmptyCellBelow(posX, posY){
         if ( posY > 1 ){
-          bar belowY = posY-1;
+          var belowY = posY-1;
           var belowID = posX + "_" + belowY;
           return checkIfCellWasClicked(belowID);
         }
