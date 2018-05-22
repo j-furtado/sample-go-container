@@ -4,7 +4,7 @@ FROM azcontregxpto.azurecr.io/golang:latest
 # Create app directory
 RUN mkdir -p /usr/src/app
 
-COPY . /usr/src/app/
+COPY app/ /usr/src/
 
 WORKDIR /usr/src/app/
 
