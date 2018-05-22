@@ -35,4 +35,4 @@ spec:
     protocol: TCP
     name: http
   selector:
-app: sample-go-app
+    app: sample-go-app
