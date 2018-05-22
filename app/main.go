@@ -1,12 +1,13 @@
 package main
 
 import (
-	"io"
+	"html/template"
 	"net/http"
 )
 
 func index(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "Hello World!")
+	t, _ := template.ParseFiles("Templates/index.html")
+	t.Execute(w, "Hello World!")
 }
 
 func main() {
