@@ -4,9 +4,9 @@ FROM azcontregxpto.azurecr.io/golang:latest
 # Create app directory
 RUN mkdir -p /usr/src/app
 
-COPY app/* /usr/src/app/
+COPY . /usr/src/app/
 
-WORKDIR /usr/src/app
+WORKDIR /usr/src/app/
 
 RUN go build -o main .
 
@@ -17,4 +17,4 @@ HEALTHCHECK --interval=5s \
             --timeout=5s \
             CMD curl -f http://127.0.0.1:8080 || exit 1
 
-ENTRYPOINT ["./main", "--port" , "8080", "--host", "0.0.0.0"]
+ENTRYPOINT ["./main"]
