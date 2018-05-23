@@ -7,6 +7,7 @@ var MAX_Y = 6;
 // Syncs the game board status of the server with the page
 // Allows for page refreshes
 $( document ).ready(function() {
+  $("#player").text("Now playing: " + currentPlayer.toUpperCase());
   $.ajax({
     async: true,
     url: "resync",
@@ -15,9 +16,9 @@ $( document ).ready(function() {
     method: "GET",
     success: function(response){
       var boardStatus = JSON.parse(response);
-      console.log("Last player: " + boardStatus.LastPlayer);
       if(boardStatus.LastPlayer != null && boardStatus.LastPlayer != "" ) {
         currentPlayer = ((boardStatus.LastPlayer == "red") ? "blue" : "red");
+        $("#player").text("Now playing: " + currentPlayer.toUpperCase());
       }
       if (boardStatus.Ended != null) {
         gameEnd = boardStatus.Ended;
@@ -31,10 +32,16 @@ $( document ).ready(function() {
 });
 
 function clickCell(posX, posY, id) {
-  console.log("Game has ended: " + gameEnd)
+  console.log("Game has ended: %s", gameEnd)
   if ( !gameEnd ){
-    console.log("Cell("+ posX + "," + posY + ") was clicked: " + checkIfCellWasClicked(id));
-    if( !checkIfCellWasClicked(id) && noEmptyCellBelow(posX, posY)) {
+    if ( !noEmptyCellBelow(posX, posY) ) {
+      var coords = calcValidPosition(posX,posY);
+      posX = coords[0];
+      posY = coords[1];
+      id = posX + "_" + posY;
+    }
+
+    if( !checkIfCellWasClicked(id) ) {
       $("#history tr:last").after('<tr><td>' + currentPlayer.toUpperCase() + ' plays: <strong>[' + posX + ',' + posY + ']</strong></td></tr>');
       $("#history").scrollTop($("#history")[0].scrollHeight);
       $.ajax({
@@ -51,10 +58,11 @@ function clickCell(posX, posY, id) {
         success: function(response){
           player = currentPlayer;
           colorCell(id);
+          $("#player").text("Now playing: " + currentPlayer.toUpperCase());
           if(response != ""){
             $("#history tr:last").after('<tr><td>The game has ended. ' + player.toUpperCase() + ' is the winner.</td></tr>');
             gameEnd = true;
-            console.log("The game has ended. " + player + " is the winner.");
+            console.log("The game has ended. %s is the winner.", player);
           }
         },
         error: function(xhr) {
@@ -68,6 +76,14 @@ function clickCell(posX, posY, id) {
   $("#play_desc").animate({scrollTop:$("#play_desc")[0].scrollHeight}, 1000);
 }
 
+function calcValidPosition(posX, posY){
+  for( var y = posY; y > 0; y--) {
+    if( checkIfCellWasClicked(posX + "_" + y) ){
+      return new Array(posX, y+1);
+    }
+  }
+  return new Array(posX, 1); // if it can't find any position, return the lowest position on the board
+}
 
 function resetGame(){
   $.ajax({
@@ -124,7 +140,6 @@ function resettingBoard(){
       var id = "#" + x + "_" + y;
       $(id).removeClass("red");
       $(id).removeClass("blue");
-
     }
   }
 }
@@ -135,7 +150,7 @@ function fillBoard(board) {
       var id = "#" + x + "_" + y;
       if(board[x][y] != null && board[x][y] != ""){
           colorCellWithColor(id, board[x][y].trim());
-          console.log("Filling cell: " + id + " with color " +  board[x][y].trim());
+          console.log("Filling cell: %s with color %s", id, board[x][y].trim());
       }
     }
   }
