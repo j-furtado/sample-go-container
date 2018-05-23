@@ -4,6 +4,32 @@ var gameEnd = false;
 var MAX_X = 7;
 var MAX_Y = 6;
 
+// Syncs the game board status of the server with the page
+// Allows for page refreshes
+$( document ).ready(function() {
+  $.ajax({
+    async: true,
+    url: "resync",
+    crossDomain: false,
+    contentType: 'application/octet-stream; charset=utf-8',
+    method: "GET",
+    success: function(response){
+      var boardStatus = JSON.parse(response);
+      console.log("Last player: " + boardStatus.LastPlayer);
+      if(boardStatus.LastPlayer != null && boardStatus.LastPlayer != "" ) {
+        currentPlayer = ((boardStatus.LastPlayer == "red") ? "blue" : "red");
+      }
+      if (boardStatus.Ended != null) {
+        gameEnd = boardStatus.Ended;
+      }
+      fillBoard(boardStatus.Board);
+    },
+    error: function(xhr) {
+      console.log("Error communicating with the server. Please try again.");
+    }
+  });
+});
+
 function clickCell(posX, posY, id) {
   console.log("Game has ended: " + gameEnd)
   if ( !gameEnd ){
@@ -76,20 +102,19 @@ function noEmptyCellBelow(posX, posY){
 }
 
 function colorCell(cellId){
-  var cellColor;
+  var cellColor = currentPlayer;
   var id = "#" + cellId;
+  colorCellWithColor(id, cellColor);
   if( currentPlayer == "red") {
-    $(id).removeClass("blue"); // just to make sure
-    $(id).addClass("red");
     currentPlayer = "blue";
-    cellColor = "red";
   } else {
-    $(id).removeClass("red"); // just to make sure
-    $(id).addClass("blue");
     currentPlayer = "red";
-    cellColor = "blue";
   }
   return cellColor;
+}
+
+function colorCellWithColor(cellID, color){
+  $(cellID).addClass(color);
 }
 
 function resettingBoard(){
@@ -100,6 +125,18 @@ function resettingBoard(){
       $(id).removeClass("red");
       $(id).removeClass("blue");
 
+    }
+  }
+}
+
+function fillBoard(board) {
+  for (var x = 1; x <= MAX_X; x++) {
+    for (var y = 1; y <= MAX_Y; y++) {
+      var id = "#" + x + "_" + y;
+      if(board[x][y] != null && board[x][y] != ""){
+          colorCellWithColor(id, board[x][y].trim());
+          console.log("Filling cell: " + id + " with color " +  board[x][y].trim());
+      }
     }
   }
 }

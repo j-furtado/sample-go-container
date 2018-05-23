@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
@@ -23,6 +24,10 @@ var BoardMatrix = [8][7]string{}
 // Player types
 var BLUEPLAYER = "blue"
 var REDPLAYER = "red"
+
+// Player info
+var LastPlayer = ""
+var GameFinished = false
 
 /*
 * Functions
@@ -162,25 +167,45 @@ func click_cell(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	posX, err := strconv.ParseInt(req.Form.Get("posX"), 10, 64)
 	posY, err := strconv.ParseInt(req.Form.Get("posY"), 10, 64)
-	currentPlayer := req.Form.Get("player")
+	LastPlayer = req.Form.Get("player")
 
-	log.Printf("Click Cell:\nX = %d\nY = %d\nCurrent Player = %s", posX, posY, currentPlayer)
+	log.Printf("Click Cell:\nX = %d\nY = %d\nCurrent Player = %s", posX, posY, LastPlayer)
 
 	if err != nil {
 		log.Printf("Error: %s", err)
 		os.Exit(2)
 	}
-	win := checkForWin(posX, posY, currentPlayer)
-	if win {
-		log.Printf("%s is the winner", currentPlayer)
+	GameFinished = checkForWin(posX, posY, LastPlayer)
+	if GameFinished {
+		log.Printf("%s is the winner", LastPlayer)
 		fmt.Fprintln(w, "win")
 	} else {
 		log.Printf("No win")
 	}
 }
 
+func resync(w http.ResponseWriter, req *http.Request) {
+	type BoardInfo struct {
+		LastPlayer string
+		Board      [8][7]string
+		Ended      bool
+	}
+	board := BoardInfo{
+		LastPlayer: LastPlayer,
+		Board:      BoardMatrix,
+		Ended:      GameFinished,
+	}
+	boardJson, err := json.Marshal(board)
+	if err != nil {
+		log.Printf("Could not marshal board state.")
+	}
+	fmt.Fprint(w, string(boardJson))
+}
+
 func reset(w http.ResponseWriter, req *http.Request) {
 	BoardMatrix = [8][7]string{}
+	LastPlayer = ""
+	GameFinished = false
 	log.Printf("Resetting the game board.")
 }
 
@@ -194,6 +219,7 @@ func main() {
 	http.HandleFunc("/", index)
 	http.HandleFunc("/clickCell", click_cell)
 	http.HandleFunc("/reset", reset)
+	http.HandleFunc("/resync", resync)
 	port := ":8080"
 	http.ListenAndServe(port, nil)
 	log.Println("Listening on port ", port)
