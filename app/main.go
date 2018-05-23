@@ -124,7 +124,7 @@ func checkDiagRightDown(x int64, y int64, player string) int {
 	return counter
 }
 
-func checkForWin(x int64, y int64, cellId string, player string) bool {
+func checkForWin(x int64, y int64, player string) bool {
 	if BoardMatrix[x][y] == "" {
 		if player == BLUEPLAYER {
 			BoardMatrix[x][y] = BLUEPLAYER
@@ -162,7 +162,6 @@ func click_cell(w http.ResponseWriter, req *http.Request) {
 	req.ParseForm()
 	posX, err := strconv.ParseInt(req.Form.Get("posX"), 10, 64)
 	posY, err := strconv.ParseInt(req.Form.Get("posY"), 10, 64)
-	cellId := req.Form.Get("id")
 	currentPlayer := req.Form.Get("player")
 
 	log.Printf("Click Cell:\nX = %d\nY = %d\nCurrent Player = %s", posX, posY, currentPlayer)
@@ -171,7 +170,7 @@ func click_cell(w http.ResponseWriter, req *http.Request) {
 		log.Printf("Error: %s", err)
 		os.Exit(2)
 	}
-	win := checkForWin(posX, posY, cellId, currentPlayer)
+	win := checkForWin(posX, posY, currentPlayer)
 	if win {
 		log.Printf("%s is the winner", currentPlayer)
 		fmt.Fprintln(w, "win")

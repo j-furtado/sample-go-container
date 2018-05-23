@@ -4,160 +4,79 @@
   <title> 4 in a row </title>
 
   <link rel="stylesheet" href="../static/css/main.css" />
-
-  <script type="text/javascript">
-      var currentPlayer = "red";
-      var gameEnd = false;
-      // size of the board is 7*6
-      var MAX_X = 7;
-      var MAX_Y = 6;
-
-      function clickCell(posX, posY, id) {
-        console.log("Game has ended: " + gameEnd)
-        if ( !gameEnd ){
-          console.log("Cell("+ posX + "," + posY + ") was clicked: " + checkIfCellWasClicked(id));
-          if( !checkIfCellWasClicked(id) && noEmptyCellBelow(posX, posY)) {
-            var xhttp = new XMLHttpRequest();
-            xhttp.onreadystatechange = function() {
-              if (this.readyState == 4 && this.status == 200) {
-                player = currentPlayer;
-                colorCell(id);
-                if(this.response != ""){
-                  alert("The game has ended. " + player + " is the winner.");
-                  gameEnd = true;
-                  console.log("The game has ended. " + player + " is the winner.");
-                }
-              }
-            };
-            xhttp.open("POST", "clickCell?posX=" + posX + "&posY=" + posY + "&id=" + id + "&player=" + currentPlayer, true);
-            xhttp.send();
-          }
-        } else {
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200) {
-              gameEnd = false;
-              resettingBoard();
-            }
-          };
-          xhttp.open("GET", "reset", true);
-          xhttp.send();
-        }
-      }
-
-      // Check if the current cell already has a chip
-      function checkIfCellWasClicked(id){
-        var classes = document.getElementById(id).getAttribute("class");
-        return (classes.includes("red") || classes.includes("blue"))
-      }
-
-      // Check if the cell below has a chip
-      function noEmptyCellBelow(posX, posY){
-        if ( posY > 1 ){
-          var belowY = posY-1;
-          var belowID = posX + "_" + belowY;
-          return checkIfCellWasClicked(belowID);
-        }
-        return true;
-      }
-
-      function colorCell(id){
-        var cellColor;
-        if( currentPlayer == "red") {
-          document.getElementById(id).setAttribute("class", "red");
-          currentPlayer = "blue";
-          cellColor = "red";
-        } else {
-          document.getElementById(id).setAttribute("class", "blue");
-          currentPlayer = "red";
-          cellColor = "blue";
-        }
-        return cellColor;
-      }
-
-      function resettingBoard(){
-        console.log("Resetting the game board.");
-        for( var x = 1; x <= MAX_X; x++) {
-          for (var y = 1; y <= MAX_Y; y++) {
-            var id = x + "_" + y;
-            var elem = document.getElementById(id);
-            var classes = elem.getAttribute("class")
-            if(classes.includes("red")){
-              elem.classList.remove("red")
-            } else if (classes.includes("blue")) {
-              elem.classList.remove("blue")
-            }
-          }
-        }
-
-      }
-
-  </script>
+  <script type="text/javascript" src="../static/scripts/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="../static/scripts/game.js"></script>
 
 </head>
 
 <body>
   <h1>It's game time</h1>
   <br><br><br>
-  <div id="gameboard" style="width:50%; margin:0 auto;">
-
-    <table class="tg">
-      <tr>
-        <th class="tg-baqh" id="1_6" onclick="clickCell(1,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="2_6" onclick="clickCell(2,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="3_6" onclick="clickCell(3,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="4_6" onclick="clickCell(4,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="5_6" onclick="clickCell(5,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="6_6" onclick="clickCell(6,6,id);">&nbsp;</th>
-        <th class="tg-baqh" id="7_6" onclick="clickCell(7,6,id);">&nbsp;</th>
-      </tr>
-      <tr>
-        <td class="tg-yw4l" id="1_5" onclick="clickCell(1,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="3_5" onclick="clickCell(2,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="2_5" onclick="clickCell(3,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="4_5" onclick="clickCell(4,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="5_5" onclick="clickCell(5,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="6_5" onclick="clickCell(6,5,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="7_5" onclick="clickCell(7,5,id);">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="tg-yw4l" id="1_4" onclick="clickCell(1,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="2_4" onclick="clickCell(2,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="3_4" onclick="clickCell(3,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="4_4" onclick="clickCell(4,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="5_4" onclick="clickCell(5,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="6_4" onclick="clickCell(6,4,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="7_4" onclick="clickCell(7,4,id);">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="tg-yw4l" id="1_3" onclick="clickCell(1,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="2_3" onclick="clickCell(2,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="3_3" onclick="clickCell(3,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="4_3" onclick="clickCell(4,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="5_3" onclick="clickCell(5,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="6_3" onclick="clickCell(6,3,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="7_3" onclick="clickCell(7,3,id);">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="tg-yw4l" id="1_2" onclick="clickCell(1,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="2_2" onclick="clickCell(2,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="3_2" onclick="clickCell(3,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="4_2" onclick="clickCell(4,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="5_2" onclick="clickCell(5,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="6_2" onclick="clickCell(6,2,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="7_2" onclick="clickCell(7,2,id);">&nbsp;</td>
-      </tr>
-      <tr>
-        <td class="tg-yw4l" id="1_1" onclick="clickCell(1,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="2_1" onclick="clickCell(2,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="3_1" onclick="clickCell(3,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="4_1" onclick="clickCell(4,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="5_1" onclick="clickCell(5,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="6_1" onclick="clickCell(6,1,id);">&nbsp;</td>
-        <td class="tg-yw4l" id="7_1" onclick="clickCell(7,1,id);">&nbsp;</td>
-      </tr>
-    </table>
+  <div id="controlButtons">
+    <button id="resetBtn" type="button" onclick="resetGame()">Reset!</button>
   </div>
-
+  <div id="game">
+    <div id="gameboard">
+      <table class="tg">
+        <tr>
+          <th class="tg-baqh" id="1_6" onclick="clickCell(1,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="2_6" onclick="clickCell(2,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="3_6" onclick="clickCell(3,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="4_6" onclick="clickCell(4,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="5_6" onclick="clickCell(5,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="6_6" onclick="clickCell(6,6,id);">&nbsp;</th>
+          <th class="tg-baqh" id="7_6" onclick="clickCell(7,6,id);">&nbsp;</th>
+        </tr>
+        <tr>
+          <td class="tg-yw4l" id="1_5" onclick="clickCell(1,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="3_5" onclick="clickCell(2,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="2_5" onclick="clickCell(3,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="4_5" onclick="clickCell(4,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="5_5" onclick="clickCell(5,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="6_5" onclick="clickCell(6,5,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="7_5" onclick="clickCell(7,5,id);">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="tg-yw4l" id="1_4" onclick="clickCell(1,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="2_4" onclick="clickCell(2,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="3_4" onclick="clickCell(3,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="4_4" onclick="clickCell(4,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="5_4" onclick="clickCell(5,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="6_4" onclick="clickCell(6,4,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="7_4" onclick="clickCell(7,4,id);">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="tg-yw4l" id="1_3" onclick="clickCell(1,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="2_3" onclick="clickCell(2,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="3_3" onclick="clickCell(3,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="4_3" onclick="clickCell(4,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="5_3" onclick="clickCell(5,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="6_3" onclick="clickCell(6,3,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="7_3" onclick="clickCell(7,3,id);">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="tg-yw4l" id="1_2" onclick="clickCell(1,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="2_2" onclick="clickCell(2,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="3_2" onclick="clickCell(3,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="4_2" onclick="clickCell(4,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="5_2" onclick="clickCell(5,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="6_2" onclick="clickCell(6,2,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="7_2" onclick="clickCell(7,2,id);">&nbsp;</td>
+        </tr>
+        <tr>
+          <td class="tg-yw4l" id="1_1" onclick="clickCell(1,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="2_1" onclick="clickCell(2,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="3_1" onclick="clickCell(3,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="4_1" onclick="clickCell(4,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="5_1" onclick="clickCell(5,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="6_1" onclick="clickCell(6,1,id);">&nbsp;</td>
+          <td class="tg-yw4l" id="7_1" onclick="clickCell(7,1,id);">&nbsp;</td>
+        </tr>
+      </table>
+    </div>
+    <div id="play_desc">
+      <table id="history"><tr><td><strong>Game Plays:</strong></td></tr></table>
+    </div>
+  </div>
 </body>
 </html>
