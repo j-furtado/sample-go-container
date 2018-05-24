@@ -12,7 +12,6 @@ $( document ).ready(function() {
     async: true,
     url: "resync",
     crossDomain: false,
-    contentType: 'application/octet-stream; charset=utf-8',
     method: "GET",
     success: function(response){
       var boardStatus = JSON.parse(response);
